@@ -21,16 +21,16 @@ lsappi - List information about installed applications.
 
 =head1 SYNOPSIS
 
-  # List information about the latest installs of OpenSSL and Apache.
+  # lists information about the latest installs of OpenSSL and Apache.
   lsappi openssl apache
 
-  # Same as above but displays debugging messages as well.
+  # same as above but displays debugging messages as well.
   lsappi -d openssl apache
 
-  # List information about all installs of OpenSSL.
+  # lists information about all installs of OpenSSL.
   lsappi -a openssl
 
-  # List information about the latest installs as found in 
+  # lists information about the latest installs as found in 
   #   all application info files.
   lsappi /var/local/apps/*.xml
 
