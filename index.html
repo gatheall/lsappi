@@ -89,7 +89,7 @@ running.</P>
 
    <DT>List information about the latest installs as found in all
       application info files.</DT>
-   <DD><CODE>lsappi /usr/local/etc/apps/*.xml</CODE></DD>
+   <DD><CODE>lsappi /var/local/apps/*.xml</CODE></DD>
 </DL>
 </BLOCKQUOTE>
 
@@ -122,6 +122,23 @@ it under the same terms as Perl itself.</P>
       <TH ALIGN="left">Version </TH>
       <TH ALIGN="left">Verification </TH>
       <TH ALIGN="left">Notes<BR></TH>
+   </TR>
+   <TR>
+      <TH ALIGN="left" VALIGN="top">18-Oct-2004 </TH>
+      <TD ALIGN="left" VALIGN="top"><A HREF="/code/lsappi/lsappi-1.0.1">1.0.1</A> </TD>
+      <TD ALIGN="left" VALIGN="top"><A HREF="/code/lsappi/lsappi-1.0.1.md5">MD5</A> / 
+         <A HREF="/code/lsappi/lsappi-1.0.1.asc">GPG</A> </TD>
+      <TD ALIGN="left" VALIGN="top">
+      <UL>
+         <LI>Changed the bang-path to use <CODE>/usr/bin/perl</CODE> rather 
+            than <CODE>/usr/local/bin/perl</CODE>.</LI>
+         <LI>Changed the usage message.</LI>
+         <LI>Changed default location of application info files from 
+            <CODE>/usr/local/etc/apps</CODE> to
+            <CODE>/var/local/apps</CODE>.</LI>
+         <LI>Added code to provide help if invalid commandline arguments
+            were supplied.</LI>
+      </UL></TD>
    </TR>
    <TR>
       <TH ALIGN="left" VALIGN="top">27-Jan-2004 </TH>
