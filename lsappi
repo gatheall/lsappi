@@ -1,4 +1,17 @@
 #!/usr/local/bin/perl -w
+#
+# ----------------------------------------------------------------------
+# lsappi
+#
+# Written by George A. Theall, theall@tifaware.com
+#
+# Copyright (c) 2004, George A. Theall. All rights reserved.
+#
+# This module is free software; you can redistribute it and/or modify
+# it under the same terms as Perl itself.
+#
+# $Id$
+# ---------------------------------------------------------------------
 
 
 =head1 NAME
@@ -68,26 +81,6 @@ Fatal errors will be reported using croak.
 
 L<http://www.tifaware.com/perl/install-app/>,
 L<http://www.tifaware.com/perl/lsappi/>.
-
-
-=head1 AUTHOR
-
-George A. Theall, E<lt>theall@tifaware.comE<gt>
-
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (c) 2004, George A. Theall.
-All rights reserved.
-
-This script is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
-
-
-=head1 HISTORY
-
-27-Jan-2004, 1.00, George A. Theall
-    o Initial version.
 
 =cut
 
@@ -189,4 +182,3 @@ while (@ARGV) {
         print "  no installation information.\n\n";
     }
 }
-
