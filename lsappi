@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl -w
+#!/usr/bin/perl -w
 #
 # ----------------------------------------------------------------------
 # lsappi
@@ -32,7 +32,7 @@ lsappi - List information about installed applications.
 
   # List information about the latest installs as found in 
   #   all application info files.
-  lsappi /usr/local/etc/apps/*.xml
+  lsappi /var/local/apps/*.xml
 
 
 =head1 DESCRIPTION
@@ -101,7 +101,7 @@ $| = 1;
 delete @ENV{qw(IFS CDPATH ENV BASH_ENV)};   # Make %ENV safer
 $ENV{PATH} = '/bin:/usr/bin:/usr/local/bin';
 my $DEBUG = 0;                          # debugging messages?
-my $apps_dir = '/usr/local/etc/apps';   # where application information is stored.
+my $apps_dir = '/var/local/apps';       # where application information is stored.
 my $dt_format = "%C";                   # format string used by Date::Format.
 umask 022;
 
@@ -117,11 +117,16 @@ GetOptions(
     'all-versions|a!',
     'debug|d!',
     'help|h|?!',
-);
+) or $options{help} = 1;
 $0 =~ s/^.+\///;
 if ($options{help} or scalar(@ARGV) == 0) {
-    print STDERR "Usage: $0 [-a|--all-versions] application1 application2 ...\n",
-                 "       $0 -h|-?|--help\n";
+    warn "\n",
+        "Usage: $0 [options] application1 application2 ...\n",
+        "\n",
+        "Options:\n",
+        "  -?, -h, --help             Display this help and exit.\n",
+        "  -d, --debug                Display copious debugging messages while\n",
+        "                               listing installation information.\n";
     exit(9);
 }
 
