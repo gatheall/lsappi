@@ -1,0 +1,192 @@
+#!/usr/local/bin/perl -w
+
+
+=head1 NAME
+
+lsappi - List information about installed applications.
+
+
+=head1 SYNOPSIS
+
+  # List information about the latest installs of OpenSSL and Apache.
+  lsappi openssl apache
+
+  # Same as above but displays debugging messages as well.
+  lsappi -d openssl apache
+
+  # List information about all installs of OpenSSL.
+  lsappi -a openssl
+
+  # List information about the latest installs as found in 
+  #   all application info files.
+  lsappi /usr/local/etc/apps/*.xml
+
+
+=head1 DESCRIPTION
+
+This script lists information about software installs as recorded in
+C<application info files> by B<install-app>
+(L<http://www.tifaware.com/perl/install-app/>).  For each application
+name or application info file specified on the commandline, B<lsappi>
+will read the application info file and report which version is
+currently installed, who installed it, and when.  If you'd rather report
+on all installs, not just the latest, use the C<-a> option.  Finally,
+there is also a C<-d> option to generate some admittedly limited
+debugging messages while running. 
+
+B<lsappi> requires Perl 5 along with the following Perl modules:
+
+    o Carp
+    o Date::Format
+    o Getopt::Long
+    o XML::Twig
+
+If your system does not have these modules installed already, visit CPAN
+(L<http://search.cpan.org/>).  Note that C<Date::Format> and 
+C<XML::Twig> are not included with the default Perl distribution so you
+may need to install them yourself.  Also note that C<XML::Twig> itself
+requires the Expat XML parser library
+(L<http://expat.sourceforge.net/>). 
+
+
+=head1 KNOWN BUGS AND CAVEATS
+
+Currently, I am not aware of any bugs in this script.  
+
+If you encounter a problem using this script, I encourage you to enable
+debug mode (eg, add C<-d> to your commandline) and examine the output it
+produces before contacting me.  Often, this will enable you to resolve
+the problem yourself. 
+
+
+=head1 DIAGNOSTICS
+
+Fatal errors will be reported using croak.
+
+
+=head1 SEE ALSO
+
+L<http://www.tifaware.com/perl/install-app/>,
+L<http://www.tifaware.com/perl/lsappi/>.
+
+
+=head1 AUTHOR
+
+George A. Theall, E<lt>theall@tifaware.comE<gt>
+
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c) 2004, George A. Theall.
+All rights reserved.
+
+This script is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
+
+
+=head1 HISTORY
+
+27-Jan-2004, 1.00, George A. Theall
+    o Initial version.
+
+=cut
+
+
+############################################################################
+# Make sure we have access to the required modules.
+use 5;
+use strict;
+use Carp;
+use Date::Format;
+use Getopt::Long;
+use XML::Twig;
+
+
+############################################################################
+# Initialize variables.
+$| = 1;
+delete @ENV{qw(IFS CDPATH ENV BASH_ENV)};   # Make %ENV safer
+$ENV{PATH} = '/bin:/usr/bin:/usr/local/bin';
+my $DEBUG = 0;                          # debugging messages?
+my $apps_dir = '/usr/local/etc/apps';   # where application information is stored.
+my $dt_format = "%C";                   # format string used by Date::Format.
+umask 022;
+
+
+############################################################################
+# Process commandline arguments.
+my %options = (
+    'debug'  => \$DEBUG,
+);
+Getopt::Long::Configure('bundling');
+GetOptions(
+    \%options,
+    'all-versions|a!',
+    'debug|d!',
+    'help|h|?!',
+);
+$0 =~ s/^.+\///;
+if ($options{help} or scalar(@ARGV) == 0) {
+    print STDERR "Usage: $0 [-a|--all-versions] application1 application2 ...\n",
+                 "       $0 -h|-?|--help\n";
+    exit(9);
+}
+
+
+############################################################################
+# Process rest of commandline arguments (ie, application / version pairs).
+while (@ARGV) {
+    # Determine application name and its associated application info file.
+    my $app_name = shift(@ARGV);
+    my $app_file;
+    if ($app_name =~ /([^\/]+)\.xml$/) {
+        $app_file = $app_name;
+        $app_name = $1;
+    }
+    else {
+        $app_file = "$apps_dir/$app_name.xml";
+    }
+    warn "debug: working with $app_name.\n" if $DEBUG;
+
+    # Read / parse application info file.
+    warn "debug:   reading application info from '$app_file'.\n" if $DEBUG;
+    my $twig=XML::Twig->new;
+    unless ($twig->safe_parsefile($app_file)) {
+        if ($@ =~ /No such file/) {
+            warn "Don't know about the application '$app_name'!\n";
+        }
+        else {
+            warn join(" ", split(/\n/, $@)), "\n";
+        }
+        next;
+    }
+
+    # Identify element used for installation information.
+    my $root = $twig->root;
+    unless ($root->children_count('install')) {
+        warn "No install element found in '$app_file'; skipped.\n";
+        next;
+    }
+    my $install = $root->first_child('install');
+
+    # Display info about installs.
+    print "$app_name\n";
+    if ($install->children_count('versions')) {
+        foreach my $version ($install->children('versions')) {
+            my $vers = $version->first_child('version')->text || 'n/a';
+            my $date = $version->first_child('date')->text || 'n/a';
+            my $user = $version->first_child('user')->text || 'n/a';
+            $date = time2str($dt_format, $date) unless ($date eq 'n/a');
+            print "  ",
+                  "$vers ", 
+                  "installed $date ",
+                  "by $user\n";
+            last unless ($options{'all-versions'});
+        }
+        print "\n";
+    }
+    else {
+        print "  no installation information.\n\n";
+    }
+}
+
