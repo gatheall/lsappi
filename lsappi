@@ -5,12 +5,10 @@
 #
 # Written by George A. Theall, theall@tifaware.com
 #
-# Copyright (c) 2004, George A. Theall. All rights reserved.
+# Copyright (c) 2004-2016, George A. Theall. All rights reserved.
 #
 # This module is free software; you can redistribute it and/or modify
 # it under the same terms as Perl itself.
-#
-# $Id$
 # ---------------------------------------------------------------------
 
 
@@ -39,7 +37,7 @@ lsappi - List information about installed applications.
 
 This script lists information about software installs as recorded in
 C<application info files> by B<install-app>
-(L<http://www.tifaware.com/perl/install-app/>).  For each application
+(L<https://github.com/gatheall/install-app>).  For each application
 name or application info file specified on the commandline, B<lsappi>
 will read the application info file and report which version is
 currently installed, who installed it, and when.  If you'd rather report
@@ -79,8 +77,8 @@ Fatal errors will be reported using croak.
 
 =head1 SEE ALSO
 
-L<http://www.tifaware.com/perl/install-app/>,
-L<http://www.tifaware.com/perl/lsappi/>.
+L<https://github.com/gatheall/install-app>,
+L<https://github.com/gatheall/lsappi>.
 
 =cut
 
